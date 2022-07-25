@@ -2,16 +2,53 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * Class Snack
+ *
+ * @property $bar_id
+ * @property $id
+ * @property $nombre
+ * @property $precio
+ * @property $disponible
+ * @property $created_at
+ * @property $updated_at
+ * @property $deleted_at
+ *
+ * @property Bar $bar
+ * @package App
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class Snack extends Model
 {
     use SoftDeletes;
-    protected $guarded = [];
+
+    static $rules = [
+		'bar_id' => 'required',
+		'nombre' => 'required',
+		'precio' => 'required',
+		'disponible' => 'required',
+    ];
+
+    protected $perPage = 20;
+
+    /**
+     * Attributes that should be mass-assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['bar_id','nombre','precio','disponible'];
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function bar()
     {
-    return $this->belongsTo(Bar::class);
+        return $this->hasOne('App\Models\Bar', 'id', 'bar_id');
     }
     
+
 }

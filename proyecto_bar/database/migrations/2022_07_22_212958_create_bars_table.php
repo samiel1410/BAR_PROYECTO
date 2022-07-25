@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePreferenciasTable extends Migration
+class CreateBarsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreatePreferenciasTable extends Migration
      */
     public function up()
     {
-        Schema::create('preferencias', function (Blueprint $table) {
-            $table->integer('menu_id');
-            $table->integer('id')->primary();
-            $table->date('fecha');
-            $table->text('observacion');
+        Schema::create('bars', function (Blueprint $table) {
+            $table->integer('campus_id')->nullable();
+            $table->integer('id')->autoIncrement();
+            $table->string('nombre', 50);
+            $table->tinyInteger('abierto');
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
             
-            $table->foreign('menu_id', 'fk_preferen_menus')->references('id')->on('menus');
+            $table->foreign('campus_id', 'fk_bars_campuses')->references('id')->on('campuses');
         });
     }
 
@@ -32,6 +32,6 @@ class CreatePreferenciasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('preferencias');
+        Schema::dropIfExists('bars');
     }
 }

@@ -2,58 +2,108 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Snack;
 use Illuminate\Http\Request;
 
-use App\Models\Snack;
-
-
+/**
+ * Class SnackController
+ * @package App\Http\Controllers
+ */
 class SnackController extends Controller
 {
-    public function __construct()
-    {
-        //parent::__construct();
-        $this->middleware('auth');
-    }
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $snacks = Snack::all();
-        return view('snacks.index', compact('snacks'));
+        $snacks = Snack::paginate();
+
+        return view('snack.index', compact('snacks'))
+            ->with('i', (request()->input('page', 1) - 1) * $snacks->perPage());
     }
 
-    public function show(Request $request, Snack $snack)
-    {
-        return view('snacks.show', compact('snack'));
-    }
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
-        return view('snacks.create');
+        $snack = new Snack();
+        return view('snack.create', compact('snack'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        $data = $request->validated();
-        $snack = Snack::create($data);
-        return redirect()->route('snacks.index')->with('status', 'Registro Creado Exitosamente...!');
+        request()->validate(Snack::$rules);
+
+        $snack = Snack::create($request->all());
+
+        return redirect()->route('snacks.index')
+            ->with('success', 'Snack created successfully.');
     }
 
-    public function edit(Request $request, Snack $snack)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        return view('snacks.edit', compact('snack'));
+        $snack = Snack::find($id);
+
+        return view('snack.show', compact('snack'));
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $snack = Snack::find($id);
+
+        return view('snack.edit', compact('snack'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  Snack $snack
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Snack $snack)
     {
-        $data = $request->validated();
-        $snack->fill($data);
-        $snack->save();
-        return redirect()->route('snacks.index')->with('status', 'Registro Actualizado Exitosamente...!');
+        request()->validate(Snack::$rules);
+
+        $snack->update($request->all());
+
+        return redirect()->route('snacks.index')
+            ->with('success', 'Snack updated successfully');
     }
 
-    public function destroy(Request $request, Snack $snack)
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function destroy($id)
     {
-        $snack->delete();
-        return redirect()->route('snacks.index')->with('status', 'Registro Eliminado Exitosamente...!');
+        $snack = Snack::find($id)->delete();
+
+        return redirect()->route('snacks.index')
+            ->with('success', 'Snack deleted successfully');
     }
 }

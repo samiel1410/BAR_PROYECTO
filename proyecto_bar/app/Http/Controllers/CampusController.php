@@ -2,59 +2,108 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campus;
 use Illuminate\Http\Request;
 
-use App\Models\Campus;
-
-
+/**
+ * Class CampusController
+ * @package App\Http\Controllers
+ */
 class CampusController extends Controller
 {
-    public function __construct()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-        //parent::__construct();
-        $this->middleware('auth');
+        $campuses = Campus::paginate();
+
+        return view('campus.index', compact('campuses'))
+            ->with('i', (request()->input('page', 1) - 1) * $campuses->perPage());
     }
 
-    public function index(Request $request)
-    {
-        $request->user()->authorizeRoles('admin');
-        $campuses = Campus::all();
-        return view('campuses.index', compact('campuses'));
-    }
-
-    public function show(Request $request, Campus $campus)
-    {
-        return view('campuses.show', compact('campus'));
-    }
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
-        return view('campuses.create');
+        $campus = new Campus();
+        return view('campus.create', compact('campus'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        $data = $request->validated();
-        $campus = Campus::create($data);
-        return redirect()->route('campuses.index')->with('status', 'Registro Creado Exitosamente...!');
+        request()->validate(Campus::$rules);
+
+        $campus = Campus::create($request->all());
+
+        return redirect()->route('campuses.index')
+            ->with('success', 'Campus created successfully.');
     }
 
-    public function edit(Request $request, Campus $campus)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        return view('campuses.edit', compact('campus'));
+        $campus = Campus::find($id);
+
+        return view('campus.show', compact('campus'));
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $campus = Campus::find($id);
+
+        return view('campus.edit', compact('campus'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  Campus $campus
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Campus $campus)
     {
-        $data = $request->validated();
-        $campus->fill($data);
-        $campus->save();
-        return redirect()->route('campuses.index')->with('status', 'Registro Actualizado Exitosamente...!');
+        request()->validate(Campus::$rules);
+
+        $campus->update($request->all());
+
+        return redirect()->route('campuses.index')
+            ->with('success', 'Campus updated successfully');
     }
 
-    public function destroy(Request $request, Campus $campus)
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function destroy($id)
     {
-        $campus->delete();
-        return redirect()->route('campuses.index')->with('status', 'Registro Eliminado Exitosamente...!');
+        $campus = Campus::find($id)->delete();
+
+        return redirect()->route('campuses.index')
+            ->with('success', 'Campus deleted successfully');
     }
 }

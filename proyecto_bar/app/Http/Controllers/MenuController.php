@@ -2,57 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Menu;
+use Illuminate\Http\Request;
 
-
+/**
+ * Class MenuController
+ * @package App\Http\Controllers
+ */
 class MenuController extends Controller
 {
-    public function __construct()
-    {
-        //parent::__construct();
-        $this->middleware('auth');
-    }
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $menus = Menu::all();
-        return view('menus.index', compact('menus'));
+        $menus = Menu::paginate();
+
+        return view('menu.index', compact('menus'))
+            ->with('i', (request()->input('page', 1) - 1) * $menus->perPage());
     }
 
-    public function show(Request $request, Menu $menu)
-    {
-        return view('menus.show', compact('menu'));
-    }
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
-        return view('menus.create');
+        $menu = new Menu();
+        return view('menu.create', compact('menu'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        $data = $request->validated();
-        $menu = Menu::create($data);
-        return redirect()->route('menus.index')->with('status', 'Registro Creado Exitosamente...!');
+        request()->validate(Menu::$rules);
+
+        $menu = Menu::create($request->all());
+
+        return redirect()->route('menus.index')
+            ->with('success', 'Menu created successfully.');
     }
 
-    public function edit(Request $request, Menu $menu)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        return view('menus.edit', compact('menu'));
+        $menu = Menu::find($id);
+
+        return view('menu.show', compact('menu'));
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $menu = Menu::find($id);
+
+        return view('menu.edit', compact('menu'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  Menu $menu
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Menu $menu)
     {
-        $data = $request->validated();
-        $menu->fill($data);
-        $menu->save();
-        return redirect()->route('menus.index')->with('status', 'Registro Actualizado Exitosamente...!');
+        request()->validate(Menu::$rules);
+
+        $menu->update($request->all());
+
+        return redirect()->route('menus.index')
+            ->with('success', 'Menu updated successfully');
     }
 
-    public function destroy(Request $request, Menu $menu)
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function destroy($id)
     {
-        $menu->delete();
-        return redirect()->route('menus.index')->with('status', 'Registro Eliminado Exitosamente...!');
+        $menu = Menu::find($id)->delete();
+
+        return redirect()->route('menus.index')
+            ->with('success', 'Menu deleted successfully');
     }
 }

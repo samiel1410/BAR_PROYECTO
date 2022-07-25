@@ -2,58 +2,108 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bar;
 use Illuminate\Http\Request;
 
-use App\Models\Bar;
-
-
+/**
+ * Class BarController
+ * @package App\Http\Controllers
+ */
 class BarController extends Controller
 {
-    public function __construct()
-    {
-        //parent::__construct();
-        $this->middleware('auth');
-    }
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $bars = Bar::all();
-        return view('bars.index', compact('bars'));
+        $bars = Bar::paginate();
+
+        return view('bar.index', compact('bars'))
+            ->with('i', (request()->input('page', 1) - 1) * $bars->perPage());
     }
 
-    public function show(Request $request, Bar $bar)
-    {
-        return view('bars.show', compact('bar'));
-    }
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
-        return view('bars.create');
+        $bar = new Bar();
+        return view('bar.create', compact('bar'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        $data = $request->validated();
-        $bar = Bar::create($data);
-        return redirect()->route('bars.index')->with('status', 'Registro Creado Exitosamente...!');
+        request()->validate(Bar::$rules);
+
+        $bar = Bar::create($request->all());
+
+        return redirect()->route('bars.index')
+            ->with('success', 'Bar created successfully.');
     }
 
-    public function edit(Request $request, Bar $bar)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        return view('bars.edit', compact('bar'));
+        $bar = Bar::find($id);
+
+        return view('bar.show', compact('bar'));
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $bar = Bar::find($id);
+
+        return view('bar.edit', compact('bar'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  Bar $bar
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Bar $bar)
     {
-        $data = $request->validated();
-        $bar->fill($data);
-        $bar->save();
-        return redirect()->route('bars.index')->with('status', 'Registro Actualizado Exitosamente...!');
+        request()->validate(Bar::$rules);
+
+        $bar->update($request->all());
+
+        return redirect()->route('bars.index')
+            ->with('success', 'Bar updated successfully');
     }
 
-    public function destroy(Request $request, Bar $bar)
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function destroy($id)
     {
-        $bar->delete();
-        return redirect()->route('bars.index')->with('status', 'Registro Eliminado Exitosamente...!');
+        $bar = Bar::find($id)->delete();
+
+        return redirect()->route('bars.index')
+            ->with('success', 'Bar deleted successfully');
     }
 }

@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +23,13 @@ Route::get('/', function () {
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
+
+Route::resource('campuses',App\Http\Controllers\CampusController::class);
+Route::resource('menus',App\Http\Controllers\MenuController::class);
+Route::resource('bars',App\Http\Controllers\BarController::class);
+Route::resource('buzons',App\Http\Controllers\BuzonController::class);
+Route::resource('preferencias',App\Http\Controllers\PreferenciaController::class);
+Route::resource('snacks',App\Http\Controllers\SnackController::class);
+///admin
+//Route::get('',[HomeController::class,'index'])->name('home');
+Route::resource('users',UserController::class)->names('admin.users');

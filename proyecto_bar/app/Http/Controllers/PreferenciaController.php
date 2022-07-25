@@ -2,52 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Preferencia;
+use Illuminate\Http\Request;
 
-
+/**
+ * Class PreferenciaController
+ * @package App\Http\Controllers
+ */
 class PreferenciaController extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $preferencias = Preferencia::all();
-        return view('preferencias.index', compact('preferencias'));
+        $preferencias = Preferencia::paginate();
+
+        return view('preferencia.index', compact('preferencias'))
+            ->with('i', (request()->input('page', 1) - 1) * $preferencias->perPage());
     }
 
-    public function show(Request $request, Preferencia $preferencia)
-    {
-        return view('preferencias.show', compact('preferencia'));
-    }
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
-        return view('preferencias.create');
+        $preferencia = new Preferencia();
+        return view('preferencia.create', compact('preferencia'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        $data = $request->validated();
-        $preferencia = Preferencia::create($data);
-        return redirect()->route('preferencias.index')->with('status', 'Registro Creado Exitosamente...!');
+        request()->validate(Preferencia::$rules);
+
+        $preferencia = Preferencia::create($request->all());
+
+        return redirect()->route('preferencias.index')
+            ->with('success', 'Preferencia created successfully.');
     }
 
-    public function edit(Request $request, Preferencia $preferencia)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        return view('preferencias.edit', compact('preferencia'));
+        $preferencia = Preferencia::find($id);
+
+        return view('preferencia.show', compact('preferencia'));
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $preferencia = Preferencia::find($id);
+
+        return view('preferencia.edit', compact('preferencia'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  Preferencia $preferencia
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Preferencia $preferencia)
     {
-        $data = $request->validated();
-        $preferencia->fill($data);
-        $preferencia->save();
-        return redirect()->route('preferencias.index')->with('status', 'Registro Actualizado Exitosamente...!');
+        request()->validate(Preferencia::$rules);
+
+        $preferencia->update($request->all());
+
+        return redirect()->route('preferencias.index')
+            ->with('success', 'Preferencia updated successfully');
     }
 
-    public function destroy(Request $request, Preferencia $preferencia)
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function destroy($id)
     {
-        $preferencia->delete();
-        return redirect()->route('preferencias.index')->with('status', 'Registro Eliminado Exitosamente...!');
+        $preferencia = Preferencia::find($id)->delete();
+
+        return redirect()->route('preferencias.index')
+            ->with('success', 'Preferencia deleted successfully');
     }
 }

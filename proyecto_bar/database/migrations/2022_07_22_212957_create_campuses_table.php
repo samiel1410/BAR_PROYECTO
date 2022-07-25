@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBuzonsTable extends Migration
+class CreateCampusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateBuzonsTable extends Migration
      */
     public function up()
     {
-        Schema::create('buzons', function (Blueprint $table) {
-            $table->integer('bar_id');
-            $table->integer('id')->primary();
-            $table->text('descripcion');
+        Schema::create('campuses', function (Blueprint $table) {
+            $table->integer('id')->autoIncrement();
+            $table->string('nombre', 50);
+            $table->string('direccion', 100);
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
-            
-            $table->foreign('bar_id', 'fk_buzons_bars')->references('id')->on('bars');
         });
     }
 
@@ -31,6 +29,6 @@ class CreateBuzonsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('buzons');
+        Schema::dropIfExists('campuses');
     }
 }
