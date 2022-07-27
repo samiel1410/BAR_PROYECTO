@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -33,3 +34,8 @@ Route::resource('snacks',App\Http\Controllers\SnackController::class);
 ///admin
 //Route::get('',[HomeController::class,'index'])->name('home');
 Route::resource('users',UserController::class)->names('admin.users');
+
+Route::resource('roles',RoleController::class)->names('admin.roles');
+
+
+

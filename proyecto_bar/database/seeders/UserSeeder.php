@@ -19,8 +19,20 @@ class UserSeeder extends Seeder
             'name'=>'Admin',
             'email'=>'admin@admin.com',
             'password'=>'latacunga14'
-        ])->assingRole('Admin');
+        ])->assignRole('Admin');
 
-        User::factory(9)->create();
+        User::create([
+            'name'=>'Encargado',
+            'email'=>'encargado@encargado.com',
+            'password'=>'latacunga14'
+        ])->assignRole('Encargado');
+
+        User::create([
+            'name'=>'Cliente',
+            'email'=>'cliente@cliente.com',
+            'password'=>'latacunga14'
+        ])->assignRole('Cliente');
+
+   
 }
 }

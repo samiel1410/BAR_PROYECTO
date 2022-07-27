@@ -3,6 +3,25 @@
 @section('template_title')
     Campus
 @endsection
+@section('css')
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css">
+@endsection
+
+@section('js')
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+   $(document).ready(function () {
+    $('#campus').DataTable();
+}); 
+</script>
+
+
+@endsection
+
 
 @section('content')
     <div class="container-fluid">
@@ -17,9 +36,11 @@
                             </span>
 
                              <div class="float-right">
+                                @can('campuses.create')
                                 <a href="{{ route('campuses.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
                                   {{ __('Create New') }}
                                 </a>
+                                @endcan
                               </div>
                         </div>
                     </div>
@@ -31,7 +52,7 @@
 
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover">
+                            <table id="campus" class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
@@ -52,11 +73,15 @@
 
                                             <td>
                                                 <form action="{{ route('campuses.destroy',$campus->id) }}" method="POST">
+                                                    @can('campuses.show')
                                                     <a class="btn btn-sm btn-primary " href="{{ route('campuses.show',$campus->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a>
+                                                    @endcan
+                                                    @can('campuses.edit')
                                                     <a class="btn btn-sm btn-success" href="{{ route('campuses.edit',$campus->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Delete</button>
+                                                    @endcan
                                                 </form>
                                             </td>
                                         </tr>

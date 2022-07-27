@@ -14,7 +14,7 @@ class CreatePreferenciasTable extends Migration
     public function up()
     {
         Schema::create('preferencias', function (Blueprint $table) {
-            $table->integer('menu_id')->nullable();;
+            $table->integer('menu_id')->nullable();
             $table->integer('id')->autoIncrement();
             $table->date('fecha');
             $table->text('observacion');

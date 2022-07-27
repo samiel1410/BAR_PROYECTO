@@ -16,6 +16,10 @@ class SnackController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+       $this->middleware('can:snacks.index');
+    }
     public function index()
     {
         $snacks = Snack::paginate();

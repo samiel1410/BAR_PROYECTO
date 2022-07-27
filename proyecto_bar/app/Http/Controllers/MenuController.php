@@ -16,6 +16,10 @@ class MenuController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+       $this->middleware('can:menus.index');
+    }
     public function index()
     {
         $menus = Menu::paginate();

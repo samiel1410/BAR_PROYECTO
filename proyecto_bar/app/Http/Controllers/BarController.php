@@ -16,6 +16,10 @@ class BarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+       $this->middleware('can:bars.index');
+    }
     public function index()
     {
         $bars = Bar::paginate();

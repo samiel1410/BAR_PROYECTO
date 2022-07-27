@@ -1,10 +1,24 @@
+@if($snack->disponible== ('1'))
+<?php
+$abierto="checked";
+$cerrado="";
+?>
+@else 
+<?php
+$abierto="";
+$cerrado="checked";  
+?>            @endif
 <div class="box box-info padding-1">
     <div class="box-body">
         
         <div class="form-group">
-            {{ Form::label('bar_id') }}
-            {{ Form::text('bar_id', $snack->bar_id, ['class' => 'form-control' . ($errors->has('bar_id') ? ' is-invalid' : ''), 'placeholder' => 'Bar Id']) }}
-            {!! $errors->first('bar_id', '<div class="invalid-feedback">:message</div>') !!}
+        <label for="bar_id">Bar</label>
+            <select class="form-control" name="bar_id" id="bar_id">
+                @foreach((\App\Models\Bar::all() ?? [] ) as $bar)
+                <option value="{{$bar->id}}">
+                    {{$bar->nombre}}</option>
+                @endforeach
+            </select>
         </div>
         <div class="form-group">
             {{ Form::label('nombre') }}
@@ -17,9 +31,14 @@
             {!! $errors->first('precio', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('disponible') }}
-            {{ Form::text('disponible', $snack->disponible, ['class' => 'form-control' . ($errors->has('disponible') ? ' is-invalid' : ''), 'placeholder' => 'Disponible']) }}
-            {!! $errors->first('disponible', '<div class="invalid-feedback">:message</div>') !!}
+        <label for="disponible">Disponible</label>
+                        <input class="form-control Boolean"  type="radio"  name="disponible" id="disponible" value="{{('1')}}"<?php echo $abierto?>                           required="required"
+                        >
+           
+            
+            <label for="disponible">No Disponible</label>
+                        <input class="form-control Boolean"  type="radio"  name="disponible" id="disponible" value="{{('0')}}"<?php echo $cerrado?>                           required="required">
+        </div>
         </div>
 
     </div>

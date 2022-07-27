@@ -16,6 +16,11 @@ class CampusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function __construct()
+     {
+        $this->middleware('can:campuses.index');
+     }
     public function index()
     {
         $campuses = Campus::paginate();

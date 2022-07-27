@@ -50,18 +50,28 @@
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             
-											<td>{{ $preferencia->menu_id }}</td>
+											<td>@foreach((\App\Models\Menu::all() ?? [] ) as $menu)
+                                @if($preferencia->menu_id == old('menu_id', $menu->id))                    
+                                    {{$menu->nombre}}               
+                                @endif                
+                            @endforeach </td>
 											<td>{{ $preferencia->fecha }}</td>
 											<td>{{ $preferencia->observacion }}</td>
 
                                             <td>
                                                 <form action="{{ route('preferencias.destroy',$preferencia->id) }}" method="POST">
+                                                    @can('preferencias.show')
                                                     <a class="btn btn-sm btn-primary " href="{{ route('preferencias.show',$preferencia->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a>
+                                                    @endcan
+
+                                                    @can('preferencias.edit')
                                                     <a class="btn btn-sm btn-success" href="{{ route('preferencias.edit',$preferencia->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+                                                    
                                                     @csrf
                                                     @method('DELETE')
                                                     
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Delete</button>
+                                                    @endcan
                                                     
                                                 </form>
                                             </td>

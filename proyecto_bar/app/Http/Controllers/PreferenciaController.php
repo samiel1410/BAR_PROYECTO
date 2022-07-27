@@ -16,6 +16,10 @@ class PreferenciaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+       $this->middleware('can:preferencias.index');
+    }
     public function index()
     {
         $preferencias = Preferencia::paginate();
