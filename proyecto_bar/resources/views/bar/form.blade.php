@@ -1,5 +1,6 @@
 @if($bar->abierto== ('1'))
 <?php
+//Control formulario
 $abierto="checked";
 $cerrado="";
 ?>
