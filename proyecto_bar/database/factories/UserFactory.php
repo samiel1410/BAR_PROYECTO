@@ -15,6 +15,9 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    /**
+     * Datos de autenticación de usuario
+     */
     public function definition()
     {
         return [
